@@ -10,7 +10,7 @@ test("replaceManifestTokens recursively replaces version tokens", () => {
     {
       version: "__VERSION__",
       nested: { value: "__VERSION__" },
-      permissions: ["storage"],
+      permissions: ["storage", "__VERSION__"],
     },
     { version: "1.8.0" },
   );
@@ -18,7 +18,7 @@ test("replaceManifestTokens recursively replaces version tokens", () => {
   assert.deepEqual(manifest, {
     version: "1.8.0",
     nested: { value: "1.8.0" },
-    permissions: ["storage"],
+    permissions: ["storage", "1.8.0"],
   });
 });
 
