@@ -16,6 +16,9 @@ function backoffDelayMs(failures) {
 const UNSPLASH_UTM_SOURCE = "firefox-bookmarks";
 const UNSPLASH_HOME = "https://unsplash.com/";
 
+const TOPMARKS_CONFIG = window.TOPMARKS_CONFIG || {};
+const UNSPLASH_ACCESS_KEY = TOPMARKS_CONFIG.UNSPLASH_ACCESS_KEY || "";
+
 function withUtm(urlString) {
   try {
     const u = new URL(urlString);

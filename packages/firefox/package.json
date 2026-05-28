@@ -1,0 +1,11 @@
+{
+  "name": "@topmarks/firefox",
+  "version": "1.8.0",
+  "private": true,
+  "description": "Firefox Manifest V2 build of Topmarks.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "lint": "npm run build && web-ext lint --source-dir dist --config web-ext-config.cjs",
+    "package": "npm run build && web-ext build --source-dir dist --config web-ext-config.cjs --overwrite-dest"
+  }
+}
