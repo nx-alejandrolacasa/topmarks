@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { writeConfigFile } from "./env-config.mjs";
 
-const ALLOWED_BROWSERS = new Set(["firefox", "chrome"]);
+export const ALLOWED_BROWSERS = new Set(["firefox", "chrome"]);
 
 const REQUIRED_OUTPUT_FILES = [
   "manifest.json",

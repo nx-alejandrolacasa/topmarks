@@ -1,8 +1,11 @@
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { validateGeneratedExtension } from "./build-extension.mjs";
+import { ALLOWED_BROWSERS, validateGeneratedExtension } from "./build-extension.mjs";
 
 export async function validateBrowserOutput(browser, repoRoot = process.cwd()) {
+  if (!ALLOWED_BROWSERS.has(browser)) {
+    throw new Error(`Unknown browser: ${browser}. Expected firefox or chrome.`);
+  }
   const distDir = path.join(repoRoot, "packages", browser, "dist");
   const messages = await validateGeneratedExtension(distDir);
   if (messages.length > 0) {

@@ -5,6 +5,7 @@ import {
   validateGeneratedExtension,
   buildExtension,
 } from "../scripts/build-extension.mjs";
+import { validateBrowserOutput } from "../scripts/validate-extension-output.mjs";
 
 test("replaceManifestTokens recursively replaces version tokens", () => {
   const manifest = replaceManifestTokens(
@@ -39,6 +40,13 @@ test("validateGeneratedExtension reports missing required files", async () => {
 test("buildExtension rejects unknown browser before path operations", async () => {
   await assert.rejects(
     () => buildExtension({ browser: "../../outside", repoRoot: new URL("../", import.meta.url) }),
+    /Unknown browser: \.\.\/\.\.\/outside\. Expected firefox or chrome\./,
+  );
+});
+
+test("validateBrowserOutput rejects unknown browser before path operations", async () => {
+  await assert.rejects(
+    () => validateBrowserOutput("../../outside"),
     /Unknown browser: \.\.\/\.\.\/outside\. Expected firefox or chrome\./,
   );
 });
