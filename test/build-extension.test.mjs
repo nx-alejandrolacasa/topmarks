@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   replaceManifestTokens,
   validateGeneratedExtension,
+  buildExtension,
 } from "../scripts/build-extension.mjs";
 
 test("replaceManifestTokens recursively replaces version tokens", () => {
@@ -33,4 +34,11 @@ test("validateGeneratedExtension reports missing required files", async () => {
     "missing config.local.js",
     "missing newtab.css",
   ]);
+});
+
+test("buildExtension rejects unknown browser before path operations", async () => {
+  await assert.rejects(
+    () => buildExtension({ browser: "../../outside", repoRoot: new URL("../", import.meta.url) }),
+    /Unknown browser: \.\.\/\.\.\/outside\. Expected firefox or chrome\./,
+  );
 });

@@ -1,9 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import path from "node:path";
 import {
   createConfigSource,
   escapeJsString,
   parseEnvContent,
+  readEnvFile,
 } from "../scripts/env-config.mjs";
 
 test("parseEnvContent reads allowlisted values and strips quotes", () => {
@@ -34,4 +37,19 @@ test("createConfigSource writes only public Topmarks config", () => {
       "",
     ].join("\n"),
   );
+});
+
+test("readEnvFile rejects when UNSPLASH_ACCESS_KEY is missing", async () => {
+  const testDir = new URL(".", import.meta.url).pathname;
+  const dir = await mkdtemp(path.join(testDir, "tmp-env-"));
+  const envPath = path.join(dir, ".env");
+  try {
+    await writeFile(envPath, "OTHER_KEY=value\n");
+    await assert.rejects(
+      () => readEnvFile(envPath),
+      /UNSPLASH_ACCESS_KEY is missing from \.env/,
+    );
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
 });

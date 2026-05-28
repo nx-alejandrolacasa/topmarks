@@ -4,6 +4,8 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { writeConfigFile } from "./env-config.mjs";
 
+const ALLOWED_BROWSERS = new Set(["firefox", "chrome"]);
+
 const REQUIRED_OUTPUT_FILES = [
   "manifest.json",
   "newtab.html",
@@ -51,6 +53,9 @@ export async function validateGeneratedExtension(distDir) {
 }
 
 export async function buildExtension({ browser, repoRoot = process.cwd() }) {
+  if (!ALLOWED_BROWSERS.has(browser)) {
+    throw new Error(`Unknown browser: ${browser}. Expected firefox or chrome.`);
+  }
   const root = path.resolve(repoRoot);
   const packageDir = path.join(root, "packages", browser);
   const sharedDir = path.join(root, "packages", "shared");

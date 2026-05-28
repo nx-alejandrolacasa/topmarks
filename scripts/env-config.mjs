@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 export const ALLOWED_CONFIG_KEYS = ["UNSPLASH_ACCESS_KEY"];
+export const REQUIRED_CONFIG_KEYS = ["UNSPLASH_ACCESS_KEY"];
 
 export function parseEnvContent(content, allowedKeys = ALLOWED_CONFIG_KEYS) {
   const allowed = new Set(allowedKeys);
@@ -57,8 +58,10 @@ export async function readEnvFile(envPath) {
   }
 
   const values = parseEnvContent(content);
-  if (!values.UNSPLASH_ACCESS_KEY) {
-    throw new Error("UNSPLASH_ACCESS_KEY is missing from .env");
+  for (const key of REQUIRED_CONFIG_KEYS) {
+    if (!values[key]) {
+      throw new Error(`${key} is missing from .env`);
+    }
   }
   return values;
 }
