@@ -39,16 +39,15 @@ test("createConfigSource writes only public Topmarks config", () => {
   );
 });
 
-test("readEnvFile rejects when UNSPLASH_ACCESS_KEY is missing", async () => {
+test("readEnvFile allows a blank optional UNSPLASH_ACCESS_KEY", async () => {
   const testDir = new URL(".", import.meta.url).pathname;
   const dir = await mkdtemp(path.join(testDir, "tmp-env-"));
   const envPath = path.join(dir, ".env");
   try {
-    await writeFile(envPath, "OTHER_KEY=value\n");
-    await assert.rejects(
-      () => readEnvFile(envPath),
-      /UNSPLASH_ACCESS_KEY is missing from \.env/,
-    );
+    await writeFile(envPath, "UNSPLASH_ACCESS_KEY=\n");
+    await assert.deepEqual(await readEnvFile(envPath), {
+      UNSPLASH_ACCESS_KEY: "",
+    });
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

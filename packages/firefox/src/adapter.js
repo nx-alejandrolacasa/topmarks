@@ -23,7 +23,11 @@
       return;
     }
     const current = await browser.tabs.getCurrent();
-    await browser.search.search({ query, tabId: current.id });
+    if (current?.id != null) {
+      await browser.search.search({ query, tabId: current.id });
+      return;
+    }
+    await browser.search.search({ query });
   }
 
   window.TopmarksBrowserAdapter = {

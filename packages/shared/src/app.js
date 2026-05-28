@@ -200,11 +200,13 @@ function createBookmarkLink(node) {
     icon.src = sources[0];
   }
 
-  const span = document.createElement("span");
-  span.className = "bookmark-title";
-  span.textContent = node.title || node.url;
-
-  a.append(icon, span);
+  a.append(icon);
+  if (node.title) {
+    const span = document.createElement("span");
+    span.className = "bookmark-title";
+    span.textContent = node.title;
+    a.append(span);
+  }
   return a;
 }
 

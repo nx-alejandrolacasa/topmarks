@@ -17,17 +17,17 @@ Topmarks ships as separate Firefox and Chrome extension packages from the same s
 
 ## Setup
 
-1. Get an Unsplash Access Key at <https://unsplash.com/oauth/applications>. Only the **Access Key** is needed — the Secret Key must never be placed in client-side code.
+1. Optional: get an Unsplash Access Key at <https://unsplash.com/oauth/applications> if you want wallpapers while testing. Only the **Access Key** is used — the App ID and Secret Key are ignored and must never be placed in client-side extension code.
 2. Configure:
 
    ```sh
    cp .env.example .env
-   # paste your UNSPLASH_ACCESS_KEY into .env
+   # optionally paste your UNSPLASH_ACCESS_KEY into .env
    npm install
    npm run build
    ```
 
-The build writes a gitignored `config.local.js` into each generated browser `dist/` folder. Re-run `npm run build` after editing `.env`.
+The build writes a gitignored `config.local.js` into each generated browser `dist/` folder. If `UNSPLASH_ACCESS_KEY` is blank, the extension still builds and runs without Unsplash wallpapers. Re-run `npm run build` after editing `.env`.
 
 ## Install in Firefox (development)
 
