@@ -54,5 +54,6 @@
     },
     search,
     faviconSources,
+    utmSource: "firefox-bookmarks",
   };
 })();

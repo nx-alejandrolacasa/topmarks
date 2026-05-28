@@ -1,0 +1,11 @@
+{
+  "name": "@topmarks/chrome",
+  "version": "1.8.0",
+  "private": true,
+  "description": "Chrome Manifest V3 build of Topmarks.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "lint": "npm run build && node ../../scripts/validate-extension-output.mjs chrome",
+    "package": "npm run build"
+  }
+}

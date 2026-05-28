@@ -1,5 +1,5 @@
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { ALLOWED_BROWSERS, validateGeneratedExtension } from "./build-extension.mjs";
 
 export async function validateBrowserOutput(browser, repoRoot = process.cwd()) {
@@ -19,7 +19,10 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     console.error("Usage: node scripts/validate-extension-output.mjs <firefox|chrome>");
     process.exit(1);
   }
-  validateBrowserOutput(browser).catch((err) => {
+  // Resolve repoRoot from the script location so the command works correctly
+  // regardless of which package directory it is invoked from.
+  const scriptRepoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  validateBrowserOutput(browser, scriptRepoRoot).catch((err) => {
     console.error(err);
     process.exit(1);
   });

@@ -17,7 +17,7 @@ function backoffDelayMs(failures) {
 // Per Unsplash API guidelines, every link back to unsplash.com must include UTM
 // params. The `utm_source` should match the application name you registered at
 // https://unsplash.com/oauth/applications.
-const UNSPLASH_UTM_SOURCE = "firefox-bookmarks";
+const UNSPLASH_UTM_SOURCE = adapter.utmSource || "topmarks";
 const UNSPLASH_HOME = "https://unsplash.com/";
 
 const TOPMARKS_CONFIG = window.TOPMARKS_CONFIG || {};
