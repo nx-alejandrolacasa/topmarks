@@ -23,7 +23,7 @@ Floats your bookmarks toolbar at the top of every new tab, over a curated rotati
 - **Curated wallpapers.** Each session loads a high-resolution photo from a curated Unsplash collection, sized to your display (up to 4K). Pick a refresh interval: every 1, 6, 12, or 24 hours.
 - **Two styles.** Pick **Glass** for a frosted-glass aesthetic with backdrop blur, or **Classic** for solid surfaces and a flush-anchored bar.
 - **Light, Dark, or Auto.** Follows your system theme or whatever you choose.
-- **7 languages.** English, Spanish, French, Italian, German, Japanese, and Simplified Chinese — auto-detects your Firefox UI language.
+- **7 languages.** English, Spanish, French, Italian, German, Japanese, and Simplified Chinese — auto-detects your browser UI language.
 - **Accessibility-aware.** Respects prefers-reduced-motion and prefers-reduced-transparency. Folder dropdowns are keyboard-navigable with proper ARIA semantics.
 
 **Privacy**
@@ -61,10 +61,10 @@ api.unsplash.com (when "Show background image" is enabled), used to
 fetch a random photo from Unsplash's curated wallpaper collection
 1053828.
 
-Build: config.local.js is generated from .env via build-config.sh
-(included in source). The shipped config.local.js contains only the
-public Unsplash Access Key (Client-ID), per Unsplash's API guidelines
-for client-side apps.
+Build: config.local.js is generated from .env by npm run build:firefox
+(or npm run build for both browser outputs). The generated config.local.js
+contains only the public Unsplash Access Key (Client-ID), per Unsplash's API
+guidelines for client-side apps.
 
 Favicons are loaded via Firefox's internal page-icon: scheme first
 (no network), falling back to the bookmarked site's own /favicon.ico.
