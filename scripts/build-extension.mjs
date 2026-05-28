@@ -13,6 +13,7 @@ const REQUIRED_OUTPUT_FILES = [
   "adapter.js",
   "config.local.js",
   "newtab.css",
+  "_locales/en/messages.json",
 ];
 
 export function replaceManifestTokens(value, tokens) {

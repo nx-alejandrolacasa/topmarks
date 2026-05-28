@@ -34,6 +34,7 @@ test("validateGeneratedExtension reports missing required files", async () => {
     "missing adapter.js",
     "missing config.local.js",
     "missing newtab.css",
+    "missing _locales/en/messages.json",
   ]);
 });
 

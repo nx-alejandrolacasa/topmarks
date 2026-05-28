@@ -46,7 +46,9 @@ jobs:
       - name: Package Chrome ZIP
         run: |
           cd packages/chrome/dist
-          zip -r ../topmarks-chrome-${{ github.ref_name }}.zip .
+          ref_name="${{ github.ref_name }}"
+          zip_name="topmarks-chrome-${ref_name//\//-}.zip"
+          zip -r "../$zip_name" .
 
       - name: Attach ZIPs to release
         if: github.event_name == 'release'
