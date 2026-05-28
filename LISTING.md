@@ -1,6 +1,6 @@
-# AMO listing copy
+# Store listing copy
 
-Text to paste into the addons.mozilla.org submission form. Keep this in sync with the actual extension behavior.
+Text to paste into Firefox Add-ons and Chrome Web Store submission forms. Keep this in sync with the actual extension behavior.
 
 ## Summary
 
@@ -15,7 +15,7 @@ Floats your bookmarks toolbar at the top of every new tab, over a curated rotati
 > Markdown is supported (basic). Paste into the AMO description field.
 
 ```markdown
-**Topmarks** floats your Firefox bookmarks toolbar at the top of every new tab, over a rotating wallpaper from Unsplash. Designed to be minimal, fast, and unobtrusive.
+**Topmarks** floats your bookmarks toolbar at the top of every new tab in Firefox or Chrome, over a rotating wallpaper from Unsplash. Designed to be minimal, fast, and unobtrusive.
 
 **Features**
 
@@ -72,4 +72,10 @@ No third-party favicon services are used.
 
 No analytics, telemetry, or crash reporting. No remote code. No
 content scripts. Bookmarks data never leaves the browser.
+```
+
+## Chrome notes for reviewer
+
+```text
+This Manifest V3 extension reads the bookmarks bar via the bookmarks API and renders it on the new tab page. The only network destination is api.unsplash.com when "Show background image" is enabled. Favicons are loaded from Chrome's internal favicon store first, falling back to each bookmarked site's own /favicon.ico. No third-party favicon services are used.
 ```

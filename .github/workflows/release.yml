@@ -1,4 +1,4 @@
-name: Build extension ZIP
+name: Build extension ZIPs
 
 on:
   release:
@@ -9,9 +9,6 @@ permissions:
   contents: write
 
 env:
-  # Opt actions/* into Node 24 ahead of the June 2026 default flip.
-  # Does not affect the Node version used by `npm run` steps below
-  # (that one comes from .nvmrc via setup-node).
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
@@ -27,7 +24,7 @@ jobs:
 
       - run: npm ci
 
-      - name: Generate config.local.js from secrets
+      - name: Generate .env from secrets
         env:
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: |
@@ -36,21 +33,34 @@ jobs:
             exit 1
           fi
           printf 'UNSPLASH_ACCESS_KEY=%s\n' "$UNSPLASH_ACCESS_KEY" > .env
-          npm run build-config
+
+      - run: npm test
+
+      - run: npm run build
 
       - run: npm run lint
 
-      - run: npx web-ext build --overwrite-dest
+      - name: Package Firefox ZIP
+        run: npm run package -w @topmarks/firefox
 
-      - name: Attach ZIP to release
+      - name: Package Chrome ZIP
+        run: |
+          cd packages/chrome/dist
+          zip -r ../topmarks-chrome-v${{ github.ref_name }}.zip .
+
+      - name: Attach ZIPs to release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: web-ext-artifacts/*.zip
+          files: |
+            packages/firefox/web-ext-artifacts/*.zip
+            packages/chrome/topmarks-chrome-*.zip
 
-      - name: Upload ZIP as workflow artifact
+      - name: Upload ZIPs as workflow artifacts
         if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: topmarks-extension
-          path: web-ext-artifacts/*.zip
+          name: topmarks-extensions
+          path: |
+            packages/firefox/web-ext-artifacts/*.zip
+            packages/chrome/topmarks-chrome-*.zip

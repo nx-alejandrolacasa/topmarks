@@ -1,6 +1,6 @@
 # Topmarks
 
-A minimal Firefox new-tab extension that floats your bookmarks toolbar at the top of every new tab, over a rotating Unsplash wallpaper.
+A minimal browser new-tab extension for Firefox and Chrome that floats your bookmarks toolbar at the top of every new tab, over a rotating Unsplash wallpaper.
 
 ## Features
 
@@ -13,7 +13,7 @@ A minimal Firefox new-tab extension that floats your bookmarks toolbar at the to
 - Respects `prefers-reduced-motion` and `prefers-reduced-transparency`
 - Privacy-respecting: no analytics, no third-party trackers, bookmarks never leave your device
 
-Firefox only (manifest v2, uses Firefox-specific APIs).
+Topmarks ships as separate Firefox and Chrome extension packages from the same shared source.
 
 ## Setup
 
@@ -23,19 +23,36 @@ Firefox only (manifest v2, uses Firefox-specific APIs).
    ```sh
    cp .env.example .env
    # paste your UNSPLASH_ACCESS_KEY into .env
-   ./build-config.sh
+   npm install
+   npm run build
    ```
 
-   This generates a gitignored `config.local.js`. Re-run after editing `.env`.
+The build writes a gitignored `config.local.js` into each generated browser `dist/` folder. Re-run `npm run build` after editing `.env`.
 
 ## Install in Firefox (development)
 
-1. Open `about:debugging#/runtime/this-firefox`.
-2. Click **Load Temporary Add-on…**.
-3. Pick `manifest.json` from this directory.
-4. Open a new tab.
+1. Run `npm run build:firefox`.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on…**.
+4. Pick `packages/firefox/dist/manifest.json`.
+5. Open a new tab.
 
-Temporary add-ons are removed when Firefox restarts. For a persistent install, the extension needs to be signed via [addons.mozilla.org](https://addons.mozilla.org), or you can run Firefox Developer Edition with `xpinstall.signatures.required` set to `false` in `about:config`.
+## Install in Chrome (development)
+
+1. Run `npm run build:chrome`.
+2. Open `chrome://extensions`.
+3. Enable **Developer mode**.
+4. Click **Load unpacked**.
+5. Pick `packages/chrome/dist`.
+6. Open a new tab.
+
+## Development
+
+- Run `npm test` for build-helper tests.
+- Run `npm run build` to generate both browser outputs.
+- Run `npm run lint` to validate generated browser outputs.
+- In Firefox, reload from `about:debugging` after rebuilding.
+- In Chrome, click **Reload** on the unpacked extension after rebuilding.
 
 ## Configuration
 
@@ -58,23 +75,15 @@ Full policy: [PRIVACY.md](./PRIVACY.md).
 
 ## Project structure
 
+```text
+packages/shared/          Shared new-tab HTML, CSS, runtime, assets, and locales
+packages/firefox/         Firefox Manifest V2 adapter, manifest, and web-ext config
+packages/chrome/          Chrome Manifest V3 adapter and manifest
+scripts/                  Shared build/config/validation helpers
+test/                     Node built-in tests for build helpers
+.env.example              Template — copy to .env, fill in, gitignored
+PRIVACY.md                Privacy policy
 ```
-manifest.json          Extension manifest (icons, permissions, locale)
-newtab.html            New tab page markup
-newtab.css             Liquid-glass styles, theme tokens
-newtab.js              Bookmarks rendering, settings, Unsplash fetch
-icons/icon.svg         Extension icon (single SVG, scales to all sizes)
-_locales/<lang>/       Translations (en, es, fr, it, de, ja, zh_CN)
-build-config.sh        Generates config.local.js from .env
-.env.example           Template — copy to .env, fill in, gitignored
-PRIVACY.md             Privacy policy
-```
-
-## Development
-
-- **Reload after changes**: in `about:debugging`, click **Reload** on the extension.
-- **Inspect DevTools**: in `about:debugging`, click **Inspect** on the extension to open the new tab page in DevTools.
-- **Re-run** `./build-config.sh` after editing `.env`.
 
 ## Credits
 

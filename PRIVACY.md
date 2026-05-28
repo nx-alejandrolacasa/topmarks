@@ -2,11 +2,11 @@
 
 **Last updated:** 2026-05-04
 
-This policy explains what data the **Topmarks** browser extension (the "extension") handles, what is transmitted off your device, and how you can control it. It applies to the version of the extension distributed via [addons.mozilla.org](https://addons.mozilla.org) and any source-built copy of the same code.
+This policy explains what data the **Topmarks** browser extension (the "extension") handles, what is transmitted off your device, and how you can control it. It applies to the Firefox and Chrome versions distributed from this source code.
 
 ## 1. Summary
 
-- The extension reads your Firefox bookmarks toolbar locally and displays it on every new tab page.
+- The extension reads your browser bookmarks toolbar locally and displays it on every new tab page.
 - The extension does **not** collect, transmit, sell, or share your bookmarks, browsing history, or any personal identifier.
 - When the optional "Show background image" feature is enabled (default: on), the extension makes HTTPS requests to Unsplash to fetch a random wallpaper photo. These requests transmit your IP address (unavoidable for any HTTP request) but no other personal data.
 - All settings and cached data are stored only on your device using Firefox's local extension storage APIs.
@@ -75,6 +75,8 @@ The extension requests only the permissions strictly required for its functional
 | `bookmarks` | Read your Firefox bookmarks toolbar to display it on the new tab page. The extension only reads bookmarks; it does not modify, delete, or transmit them. |
 | `storage` | Persist your settings and the last-fetched background photo's metadata locally. |
 | `https://api.unsplash.com/*` | Make HTTPS requests to Unsplash to fetch a random wallpaper photo when "Show background image" is enabled. |
+| `search` | Submit queries from the new-tab search field to your browser's default search engine. Search terms are sent only to the search engine already configured in your browser. |
+| `favicon` (Chrome only) | Read favicons from Chrome's internal favicon store for bookmarked pages. |
 
 ## 6. Legal basis for processing (EU/EEA users)
 
