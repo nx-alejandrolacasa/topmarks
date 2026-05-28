@@ -1,4 +1,8 @@
-const TOOLBAR_ID = "toolbar_____";
+const adapter = window.TopmarksBrowserAdapter;
+if (!adapter) {
+  throw new Error("Topmarks browser adapter is not loaded");
+}
+
 const SVG_NS = "http://www.w3.org/2000/svg";
 // Tabliss's curated wallpaper collection — ~545 hand-picked, consistent high quality.
 const UNSPLASH_COLLECTION_ID = "1053828";
@@ -33,15 +37,17 @@ function withUtm(urlString) {
 
 function t(key) {
   try {
-    const msg = browser.i18n.getMessage(key);
+    const msg = adapter.getMessage(key);
     if (msg) return msg;
-  } catch {}
+  } catch (err) {
+    console.warn("[Topmarks] i18n lookup failed:", err);
+  }
   return key;
 }
 
 function applyI18n() {
   try {
-    const lang = browser.i18n.getUILanguage();
+    const lang = adapter.getUILanguage();
     if (lang) document.documentElement.lang = lang;
   } catch {}
   document.title = t("newTabTitle");
@@ -83,25 +89,6 @@ function isFolder(node) {
 
 function sortFoldersFirst(nodes) {
   return [...nodes].sort((a, b) => (isFolder(a) ? 0 : 1) - (isFolder(b) ? 0 : 1));
-}
-
-function faviconSources(url) {
-  // 1. `page-icon:` — undocumented Firefox URL scheme that returns the favicon
-  //    Firefox already has cached for the page. No network request, no third
-  //    parties. Falls through silently if the scheme isn't accessible from this
-  //    context.
-  // 2. The site's own `/favicon.ico` — direct fetch, no third-party service.
-  //
-  // Third-party favicon services (Google, DuckDuckGo, etc.) are deliberately
-  // avoided: they would receive each bookmark's hostname, transmitting browsing
-  // data to a third party under Firefox add-on policies.
-  try {
-    const u = new URL(url);
-    if (u.protocol !== "http:" && u.protocol !== "https:") return [];
-    return [`page-icon:${url}`, `${u.origin}/favicon.ico`];
-  } catch {
-    return [];
-  }
 }
 
 function createFolderIcon() {
@@ -182,7 +169,7 @@ function createBookmarkLink(node) {
   a.href = node.url;
   a.title = `${node.title || node.url}\n${node.url}`;
 
-  const sources = faviconSources(node.url);
+  const sources = adapter.faviconSources(node.url);
   let icon;
   if (sources.length === 0) {
     icon = createGlobeIcon();
@@ -445,8 +432,7 @@ async function renderBookmarks() {
   const bar = document.getElementById("bookmarks-bar");
   bar.textContent = "";
   try {
-    const [toolbar] = await browser.bookmarks.getSubTree(TOOLBAR_ID);
-    const items = toolbar.children || [];
+    const items = await adapter.getToolbarBookmarks();
     if (!items.length) {
       const empty = document.createElement("span");
       empty.className = "empty-state";
@@ -568,7 +554,7 @@ async function loadBackground({ force = false } = {}) {
     return;
   }
 
-  const stored = await browser.storage.local.get([
+  const stored = await adapter.storageGet([
     "cachedBackground",
     "unsplashBackoff",
   ]);
@@ -618,7 +604,7 @@ async function loadBackground({ force = false } = {}) {
         photoUrl: fresh.photoUrl,
         fetchedAt: Date.now(),
       };
-      await browser.storage.local.set({
+      await adapter.storageSet({
         cachedBackground: cached,
         unsplashBackoff: { failures: 0, nextAttemptAt: 0 },
       });
@@ -628,7 +614,7 @@ async function loadBackground({ force = false } = {}) {
     } catch (err) {
       const failures = backoff.failures + 1;
       const delay = backoffDelayMs(failures);
-      await browser.storage.local.set({
+      await adapter.storageSet({
         unsplashBackoff: {
           failures,
           nextAttemptAt: Date.now() + delay,
@@ -693,7 +679,7 @@ async function updateBackgroundErrorVisibility() {
     return;
   }
 
-  const stored = await browser.storage.local.get([
+  const stored = await adapter.storageGet([
     "unsplashBackoff",
     "cachedBackground",
   ]);
@@ -735,26 +721,24 @@ async function updateBackgroundErrorVisibility() {
   }
 }
 
-if (browser.storage?.onChanged) {
-  browser.storage.onChanged.addListener((changes, area) => {
-    if (area === "local" && changes.unsplashBackoff) {
-      updateBackgroundErrorVisibility();
-    }
-  });
-}
+adapter.onStorageChanged((changes, area) => {
+  if (area === "local" && changes.unsplashBackoff) {
+    updateBackgroundErrorVisibility();
+  }
+});
 
 systemDarkMq.addEventListener("change", () => {
   if (settings.theme === "auto") applyTheme();
 });
 
 async function loadSettings() {
-  const stored = await browser.storage.local.get(SETTINGS_DEFAULTS);
+  const stored = await adapter.storageGet(SETTINGS_DEFAULTS);
   settings = { ...SETTINGS_DEFAULTS, ...stored };
 }
 
 async function saveSetting(key, value) {
   settings[key] = value;
-  await browser.storage.local.set({ [key]: value });
+  await adapter.storageSet({ [key]: value });
 }
 
 function syncSettingsUi() {
@@ -858,16 +842,7 @@ function setupSearch() {
       e.preventDefault();
       const inNewTab = e.shiftKey || e.ctrlKey || e.metaKey;
       try {
-        if (inNewTab) {
-          const tab = await browser.tabs.create({
-            url: "about:blank",
-            active: true,
-          });
-          await browser.search.search({ query, tabId: tab.id });
-        } else {
-          const current = await browser.tabs.getCurrent();
-          await browser.search.search({ query, tabId: current.id });
-        }
+        await adapter.search(query, { newTab: inNewTab });
       } catch (err) {
         console.error("[Topmarks] Search submit failed:", err);
       }
@@ -934,10 +909,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-const bookmarkEvents = ["onCreated", "onRemoved", "onChanged", "onMoved"];
-for (const ev of bookmarkEvents) {
-  if (browser.bookmarks[ev]) browser.bookmarks[ev].addListener(renderBookmarks);
-}
+adapter.onBookmarksChanged(renderBookmarks);
 
 let resizeReflowTimer;
 window.addEventListener("resize", () => {
