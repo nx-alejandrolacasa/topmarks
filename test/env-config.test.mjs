@@ -26,6 +26,10 @@ test("escapeJsString escapes backslashes and quotes", () => {
   assert.equal(escapeJsString('a\\b"c'), 'a\\\\b\\"c');
 });
 
+test("escapeJsString escapes line separators so generated config remains valid JS", () => {
+  assert.equal(escapeJsString("a\r\nb\u2028c\u2029d"), "a\\r\\nb\\u2028c\\u2029d");
+});
+
 test("createConfigSource writes only public Topmarks config", () => {
   const source = createConfigSource({ UNSPLASH_ACCESS_KEY: "abc123" });
 

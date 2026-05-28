@@ -13,6 +13,7 @@ const REQUIRED_OUTPUT_FILES = [
   "adapter.js",
   "config.local.js",
   "newtab.css",
+  "theme-init.js",
   "_locales/en/messages.json",
 ];
 
