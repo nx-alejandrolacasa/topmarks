@@ -20,3 +20,7 @@ Thumbs.db
 # Node / web-ext
 node_modules/
 web-ext-artifacts/
+
+# Generated extension outputs
+packages/*/dist/
+packages/*/web-ext-artifacts/

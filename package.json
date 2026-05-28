@@ -3,15 +3,22 @@
   "version": "1.8.0",
   "private": true,
   "license": "MIT",
-  "description": "Firefox new-tab extension that floats your bookmarks toolbar at the top with a rotating Unsplash wallpaper.",
+  "description": "Browser new-tab extension that floats your bookmarks toolbar at the top with a rotating Unsplash wallpaper.",
+  "workspaces": [
+    "packages/*"
+  ],
   "engines": {
     "node": "22.x"
   },
   "scripts": {
-    "build-config": "./build-config.sh",
-    "lint": "web-ext lint",
-    "build": "npm run build-config && web-ext build --overwrite-dest",
-    "start": "web-ext run"
+    "build": "npm run build --workspaces --if-present",
+    "build:firefox": "npm run build -w @topmarks/firefox",
+    "build:chrome": "npm run build -w @topmarks/chrome",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:firefox": "npm run lint -w @topmarks/firefox",
+    "lint:chrome": "npm run lint -w @topmarks/chrome",
+    "test": "node --test test/*.test.mjs",
+    "validate": "npm test && npm run build && npm run lint"
   },
   "devDependencies": {
     "web-ext": "^10.1.0"
