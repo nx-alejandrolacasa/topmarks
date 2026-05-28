@@ -40,7 +40,9 @@
       return browser.storage.local.set(values);
     },
     onStorageChanged(listener) {
-      browser.storage.onChanged.addListener(listener);
+      browser.storage.onChanged.addListener((changes, area) => {
+        if (area === "local") listener(changes);
+      });
     },
     getToolbarBookmarks,
     onBookmarksChanged(listener) {

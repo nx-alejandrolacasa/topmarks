@@ -49,7 +49,9 @@ function applyI18n() {
   try {
     const lang = adapter.getUILanguage();
     if (lang) document.documentElement.lang = lang;
-  } catch {}
+  } catch (err) {
+    console.warn("[Topmarks] UI language lookup failed:", err);
+  }
   document.title = t("newTabTitle");
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const msg = t(el.dataset.i18n);
@@ -721,8 +723,8 @@ async function updateBackgroundErrorVisibility() {
   }
 }
 
-adapter.onStorageChanged((changes, area) => {
-  if (area === "local" && changes.unsplashBackoff) {
+adapter.onStorageChanged((changes) => {
+  if (changes.unsplashBackoff) {
     updateBackgroundErrorVisibility();
   }
 });
