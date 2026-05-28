@@ -6,9 +6,9 @@
   "description": "__MSG_extDescription__",
   "homepage_url": "https://github.com/nx-alejandrolacasa/topmarks",
   "icons": {
-    "48": "icons/icon.svg",
-    "96": "icons/icon.svg",
-    "128": "icons/icon.svg"
+    "48": "icons/icon.png",
+    "96": "icons/icon.png",
+    "128": "icons/icon.png"
   },
   "permissions": [
     "bookmarks",
